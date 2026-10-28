@@ -34,15 +34,9 @@ export function servePublicFiles() {
       });
       verifySuccessfulPoisonNullByteExploit(file);
 
-      const safePath = path.resolve('ftp/', file);
-      const baseDir = path.resolve('ftp/');
+      const safeFilename = path.basename(file)
 
-      if (!safePath.startsWith(baseDir)) {
-        res.status(403);
-        return next(new Error('Access denied: Path traversal detected!'));
-      }
-
-      res.sendFile(safePath);
+      res.sendFile(safeFilename, { root: path.resolve('ftp/') })
     } else {
       res.status(403);
       next(new Error('Only .md and .pdf files are allowed!'));
