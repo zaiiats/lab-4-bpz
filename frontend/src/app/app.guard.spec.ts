@@ -43,7 +43,12 @@ describe('LoginGuard', () => {
     it('returns payload from decoding a valid JWT', () => {
         const guard = TestBed.inject(LoginGuard)
 
-        localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')
+        // Динамічна генерація тестового JWT замість захардкодженого рядка
+        const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+        const payload = btoa(JSON.stringify({ sub: '1234567890', name: 'John Doe', iat: 1516239022 }))
+        const dynamicMockJwt = `${header}.${payload}.signature`
+
+        localStorage.setItem('token', dynamicMockJwt)
         expect(guard.tokenDecode()).toEqual({
             sub: '1234567890',
             name: 'John Doe',
